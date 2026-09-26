@@ -37,7 +37,7 @@ public class UserApplicationMapper {
         new UserEmail(command.email()),
         passwordToUse,
         UserRole.fromString(command.role()),
-        UserStatus.fromString(command.status()));
+        UserStatus.ACTIVE);
   }
 
   public UserId fromGetUserByIdQueryToUserId(final GetUserByIdQuery query) {
