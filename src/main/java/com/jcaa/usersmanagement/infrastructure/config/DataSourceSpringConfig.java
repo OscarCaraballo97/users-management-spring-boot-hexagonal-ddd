@@ -1,6 +1,5 @@
 package com.jcaa.usersmanagement.infrastructure.config;
 
-import com.jcaa.usersmanagement.infrastructure.adapter.persistence.config.DatabaseConfig;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import javax.sql.DataSource;
@@ -38,18 +37,21 @@ public class DataSourceSpringConfig {
 
   @Bean
   public DataSource dataSource() {
-    final DatabaseConfig config = new DatabaseConfig(dbHost, dbPort, dbName, dbUsername, dbPassword);
+    String jdbcUrl = String.format("jdbc:postgresql://%s:%d/%s", dbHost, dbPort, dbName);
 
     final HikariConfig hikariConfig = new HikariConfig();
-    hikariConfig.setJdbcUrl(config.buildJdbcUrl());
-    hikariConfig.setUsername(config.username());
-    hikariConfig.setPassword(config.password());
+
+    hikariConfig.setDriverClassName("org.postgresql.Driver");
+    hikariConfig.setJdbcUrl(jdbcUrl);
+    hikariConfig.setUsername(dbUsername);
+    hikariConfig.setPassword(dbPassword);
+
     hikariConfig.setMaximumPoolSize(10);
     hikariConfig.setMinimumIdle(2);
     hikariConfig.setConnectionTimeout(30_000);
+    hikariConfig.setMaxLifetime(240_000);
 
     log.info(LOG_DATASOURCE_INIT, dbHost, dbPort);
     return new HikariDataSource(hikariConfig);
   }
 }
-
